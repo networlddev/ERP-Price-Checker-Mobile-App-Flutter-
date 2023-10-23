@@ -50,8 +50,8 @@ class Utility {
     return null;
   }
 
- static Future<bool> hasExpiryDatePassed() async {
-  final storedExpiryDate = await getExpiryDate();
+ static bool hasExpiryDatePassed()  {
+  final storedExpiryDate =  getExpiryDate();
   if (storedExpiryDate == null) {
     return true;
   }
@@ -60,14 +60,14 @@ class Utility {
   return storedExpiryDate.isBefore(currentDate);
 }
 
- static void storeExpiryDate(DateTime activationDate) async {
-  final box = await Hive.openBox<String>(HiveBoxes.expiryDateBox);
+ static void storeExpiryDate(DateTime activationDate)  {
+  final box =  Hive.box<String>(HiveBoxes.expiryDateBox);
   final activationDateString = activationDate.toIso8601String(); 
-  await box.put(HiveBoxes.expiryDateBoxKey, activationDateString);
+   box.put(HiveBoxes.expiryDateBoxKey, activationDateString);
 }
 
-static Future<DateTime?> getExpiryDate() async {
-  final box = await Hive.openBox<String>(HiveBoxes.expiryDateBox);
+static DateTime? getExpiryDate()  {
+  final box =  Hive.box<String>(HiveBoxes.expiryDateBox);
   final activationDateString = box.get(HiveBoxes.expiryDateBoxKey);
   if (activationDateString != null) {
     return DateTime.parse(activationDateString); 

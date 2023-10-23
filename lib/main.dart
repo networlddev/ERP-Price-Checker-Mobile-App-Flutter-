@@ -13,6 +13,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox(HiveBoxes.authenticationBox);
   await Hive.openBox(HiveBoxes.urlBox);
+  await Hive.openBox<String>(HiveBoxes.expiryDateBox);
   runApp(const MyApp());
 }
 

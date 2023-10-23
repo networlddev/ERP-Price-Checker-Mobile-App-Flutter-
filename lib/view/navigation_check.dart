@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netpospricechecker/app_constants/images_paths.dart';
 import 'package:netpospricechecker/core/utils/navigation_check_utilty.dart';
 import 'package:netpospricechecker/view/price_checker_screen.dart';
 import 'package:netpospricechecker/view/shared_folder_config_screen.dart';
@@ -15,17 +16,9 @@ class _NavigationCheckState extends State<NavigationCheck> {
   Pages page = Pages.userValidationScreen;
 
   @override
-  void initState() {
-    getPage();
-    super.initState();
-  }
-
-  Future<void> getPage() async {
-    page = await NavigationCheckUtility.getNavigationPage();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    page = NavigationCheckUtility.getNavigationPage();
+
     switch (page) {
       case Pages.priceCheckerScreen:
         return const PriceCheckerScreen();

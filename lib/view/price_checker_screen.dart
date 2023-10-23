@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:netpospricechecker/app_constants/images_paths.dart';
 import 'package:netpospricechecker/models/product_details.dart';
+import 'package:netpospricechecker/view/widgets/custom_dialogue_box.dart';
 import 'package:netpospricechecker/view/widgets/price_checker_container_widget.dart';
 import 'package:netpospricechecker/view/widgets/text_widget.dart';
 import 'package:netpospricechecker/view_models/price_checker_view_model.dart';
@@ -19,7 +20,7 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
 
   @override
   void initState() {
-    context.read<PriceCheckerViewModel>().checkPrice("10");
+    context.read<PriceCheckerViewModel>().checkPrice("1049");
     super.initState();
   }
 
@@ -37,205 +38,144 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
         width: double.infinity,
         height: double.infinity,
         child: Scaffold(
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-              fit: BoxFit.fill,
-              image: Image.asset(
-                ImagesPath.backgroundImage,
-              ).image,
-            )),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onDoubleTap: () {
-                            setState(() {
-                              showDetails = !showDetails;
-                            });
-                          },
-                          child: CustomContainerWidget(
-                            height: size.height * 0.1,
-                            width: size.width * 0.2,
-                            isBackgroundColor: false,
-                            widget: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Image.asset(
-                                  ImagesPath.networldLogoImage,
-                                  fit: BoxFit.contain,
-                                )),
+          body: Stack(children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                fit: BoxFit.fill,
+                image: Image.asset(
+                  ImagesPath.backgroundImage,
+                ).image,
+              )),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onDoubleTap: () {
+                              setState(() {
+                                showDetails = !showDetails;
+                              });
+                            },
+                            child: CustomContainerWidget(
+                              height: size.height * 0.1,
+                              width: size.width * 0.2,
+                              isBackgroundColor: false,
+                              widget: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Image.asset(
+                                    ImagesPath.networldLogoImage,
+                                    fit: BoxFit.contain,
+                                  )),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  showDetails
-                      ? CustomContainerWidget(
-                          height: size.height * 0.2,
-                          width: size.width * 0.4,
-                          widget: const Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TextWidget(
-                                  txt: 'Item Information',
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TextWidget(
-                                        txt: 'Stock left',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 40, 10, 20),
+                      child: CustomContainerWidget(
+                        height: size.height * 0.4,
+                        width: size.width * 0.6,
+                        widget: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const TextWidget(
+                                txt: 'Price',
+                                fontSize: 16,
+                              ),
+                              isLoading
+                                  ? const Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
                                       ),
-                                      TextWidget(
-                                        txt: '500',
-                                        fontSize: 16,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TextWidget(
-                                        txt: 'Rack No.',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      TextWidget(
-                                        txt: '6',
-                                        fontSize: 16,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TextWidget(
-                                        txt: 'Shelf No.',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      TextWidget(
-                                        txt: '8',
-                                        fontSize: 16,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ]),
-                        )
-                      : SizedBox(
-                          height: size.height * 0.2,
-                          width: size.width * 0.4,
+                                    )
+                                  : TextWidget(
+                                      txt: productDetails?.salesPrice
+                                              .toString() ??
+                                          "",
+                                      fontSize: 120,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              const TextWidget(
+                                txt: 'OFFER ITEM',
+                                fontSize: 14,
+                              ),
+                            ]),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 20),
+                      child: CustomContainerWidget(
+                        height: size.height * 0.1,
+                        width: double.infinity,
+                        alignment: Alignment.centerLeft,
+                        widget: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 50,
+                              ),
+                              child: TextWidget(
+                                txt: productName,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                          ],
                         ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 40, 10, 20),
-                    child: CustomContainerWidget(
-                      height: size.height * 0.2,
-                      width: size.width * 0.4,
-                      widget: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 250),
+                      child: CustomContainerWidget(
+                        height: size.height * 0.1,
+                        width: double.infinity,
+                        alignment: Alignment.centerLeft,
+                        radius: 35,
+                        widget: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const TextWidget(
-                              txt: 'Price',
-                              fontSize: 16,
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 50,
+                              ),
+                              child: TextWidget(
+                                txt:
+                                    'Check Price here        تحقق من السعر هنا',
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                textAlign: TextAlign.start,
+                              ),
                             ),
-                            isLoading
-                                ? const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : TextWidget(
-                                    txt:
-                                        productDetails?.salesPrice.toString() ??
-                                            "",
-                                    fontSize: 50,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            const TextWidget(
-                              txt: 'OFFER ITEM',
-                              fontSize: 14,
-                            ),
-                          ]),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 20),
-                    child: CustomContainerWidget(
-                      height: size.height * 0.1,
-                      width: double.infinity,
-                      alignment: Alignment.centerLeft,
-                      widget: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 50,
-                            ),
-                            child: TextWidget(
-                              txt: productName,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 250),
-                    child: CustomContainerWidget(
-                      height: size.height * 0.1,
-                      width: double.infinity,
-                      alignment: Alignment.centerLeft,
-                      radius: 35,
-                      widget: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 50,
-                            ),
-                            child: TextWidget(
-                              txt: 'Check Price here        تحقق من السعر هنا',
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
+            showDetails
+                ? CustomDialogue(
+                    showDialog: (value) {
+                      setState(() {
+                        showDetails = value;
+                      });
+                    },
+                  )
+                : const SizedBox()
+          ]),
         ),
       ),
     );

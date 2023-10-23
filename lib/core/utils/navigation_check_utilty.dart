@@ -5,18 +5,19 @@ import 'package:netpospricechecker/core/utils/utility.dart';
 class NavigationCheckUtility {
   NavigationCheckUtility._();
 
-  static Future<Pages> getNavigationPage() async {
+  static Pages getNavigationPage()  {
     var authenticationKey = Hive.box(HiveBoxes.authenticationBox)
         .get(HiveBoxes.authenticationBoxKey);
     var url = Hive.box(HiveBoxes.urlBox).get(HiveBoxes.urlBoxKey);
+    bool hasPassed =  Utility.hasExpiryDatePassed();
 
     if (authenticationKey == null || authenticationKey == "") {
       return Pages.userValidationScreen;
-    } else if (await Utility.hasExpiryDatePassed()) {
+    } else if (hasPassed) {
       return Pages.userValidationScreen;
     } else if (authenticationKey != null &&
         authenticationKey != "" &&
-        await Utility.hasExpiryDatePassed() != true &&
+         hasPassed != true &&
         url == null) {
       return Pages.urlScreen;
     } else if (authenticationKey == null &&
