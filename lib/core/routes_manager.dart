@@ -13,8 +13,6 @@ class Routes {
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
-      // case Routes.splashScreen:
-      //   return MaterialPageRoute(builder: (_) => const SplashScreen());
       case Routes.userValidationScreen:
         return MaterialPageRoute(builder: (_) => UserValidationScreen());
       case Routes.sharedFolderConfigScreen:
@@ -23,24 +21,6 @@ class RouteGenerator {
             case Routes.priceCheckerScreen:
         return MaterialPageRoute(
             builder: (_) => const PriceCheckerScreen());
-      // case Routes.mainScreen:
-      //   return MaterialPageRoute(builder: (_) => const MainScreen());
-      // case Routes.editProfile:
-      //   return MaterialPageRoute(builder: (_) => const EditProfileScreen());
-      // case Routes.changePassword:
-      //   return MaterialPageRoute(builder: (_) => const ChangePassword());
-      // case Routes.getHelp:
-      //   return MaterialPageRoute(builder: (_) => const GetHelpScreen());
-      // case Routes.viewPage:
-      //   return FadePageRoute(page: const ItemViewPage());
-      // case Routes.viewPageLoading:
-      //   return FadePageRoute(page: const ViewPageLoading());
-      // case Routes.productPurPage:
-      //   return MaterialPageRoute(builder: (_) => const ProductPurchasePage());
-      // case Routes.StockUpdate:
-      //   return MaterialPageRoute(builder: (_) => const StockUpdateScreen());
-      //     case Routes.importMaster:
-      //   return MaterialPageRoute(builder: (_) => const ImportMasterScreen());
       default:
         return unDefinedRoute();
     }

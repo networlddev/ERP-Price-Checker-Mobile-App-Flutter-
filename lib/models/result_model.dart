@@ -1,14 +1,15 @@
-class Validation {
+
+class Result {
   bool? result;
-  String? message;
-  String? token;
+  dynamic message;
+  dynamic token;
 
-  Validation({this.result, this.message, this.token});
+  Result({this.result, this.message, this.token});
 
-  Validation.fromJson(Map<String, dynamic> json) {
+  Result.fromJson(Map<String, dynamic> json) {
     result = json['result'];
     message = json['message'];
-    token = json['token'];
+    token = json['token']; 
   }
 
   Map<String, dynamic> toJson() {

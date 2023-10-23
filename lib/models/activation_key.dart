@@ -1,4 +1,5 @@
 class ActivationKey {
+  
   String? activationKey;
 
   ActivationKey({this.activationKey});

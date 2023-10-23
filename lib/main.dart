@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:netpospricechecker/app_constants/hive_boxes.dart';
+import 'package:netpospricechecker/app_constants/strings.dart';
 import 'package:netpospricechecker/core/routes_manager.dart';
+import 'package:netpospricechecker/view/navigation_check.dart';
+import 'package:netpospricechecker/view_models/price_checker_view_model.dart';
 import 'package:netpospricechecker/view_models/user_validation_view_model.dart';
 import 'package:provider/provider.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Hive.openBox("token");
-  await Hive.openBox("url");
+  await Hive.openBox(HiveBoxes.authenticationBox);
+  await Hive.openBox(HiveBoxes.urlBox);
   runApp(const MyApp());
 }
 
@@ -22,6 +25,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => UserValidationViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PriceCheckerViewModel(),
         )
       ],
       child: MaterialApp(
@@ -31,7 +37,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: Routes.userValidationScreen,
+        // initialRoute: Routes.userValidationScreen,
+        home: const NavigationCheck(),
         onGenerateRoute: RouteGenerator.getRoute,
       ),
     );

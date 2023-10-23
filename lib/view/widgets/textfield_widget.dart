@@ -13,13 +13,14 @@ class TextFieldWidget extends StatelessWidget {
   final bool enabled;
   final ValueChanged? onTapOutside;
   final FocusNode? focusNode;
-    final TextInputFormatter? inputFormatter;
+  final TextInputFormatter? inputFormatter;
+  final Color textColor;
 
   const TextFieldWidget(
       {super.key,
       required this.controller,
       required this.hintText,
-      this.color,
+      this.color = Colors.blueGrey,
       this.isReadOnly = false,
       this.keyboardType,
       this.validator,
@@ -28,7 +29,8 @@ class TextFieldWidget extends StatelessWidget {
       this.onEditingComplete,
       this.onTapOutside,
       this.focusNode,
-      this.inputFormatter});
+      this.inputFormatter,
+      this.textColor = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +46,17 @@ class TextFieldWidget extends StatelessWidget {
         enabled: enabled,
         onEditingComplete: onEditingComplete,
         focusNode: focusNode,
+        style: TextStyle(color: textColor),
         onTapOutside: (event) {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         readOnly: isReadOnly,
         decoration: InputDecoration(
-          border: getOutlinedBorder(),
+          border: getOutlinedBorder(color),
           enabledBorder: getEnabledBorder(color),
           focusedBorder: getFocusedBorder(color),
           errorBorder: getErrorBorder(),
+          disabledBorder: getDisabledBorder(),
 
           // errorStyle: const TextStyle(fontSize: 8),
           contentPadding: const EdgeInsets.symmetric(
@@ -68,7 +72,10 @@ class TextFieldWidget extends StatelessWidget {
   }
 }
 
-OutlineInputBorder getOutlinedBorder() => const OutlineInputBorder();
+OutlineInputBorder getOutlinedBorder(Color? color) => OutlineInputBorder(
+        borderSide: BorderSide(
+      color: color ?? const Color(0xFF000000),
+    ));
 
 OutlineInputBorder getEnabledBorder(Color? color) => OutlineInputBorder(
         borderSide: BorderSide(
@@ -84,3 +91,6 @@ OutlineInputBorder getErrorBorder() => const OutlineInputBorder(
         borderSide: BorderSide(
       color: Colors.red,
     ));
+
+OutlineInputBorder getDisabledBorder() =>
+     OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)));
