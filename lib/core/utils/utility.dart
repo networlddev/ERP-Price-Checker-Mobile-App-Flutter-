@@ -19,6 +19,12 @@ class Utility {
     return result;
   }
 
+  static String formatTextToSpeech(String value) {
+    List<String> parts = value.split('.');
+    return "${parts[0]} and ${parts[1]}";
+    
+  }
+
   static String getLastFourCharacters(String inputString) {
     int length = inputString.length;
 
@@ -50,29 +56,29 @@ class Utility {
     return null;
   }
 
- static bool hasExpiryDatePassed()  {
-  final storedExpiryDate =  getExpiryDate();
-  if (storedExpiryDate == null) {
-    return true;
-  }
-  
-  final currentDate = DateTime.now();
-  return storedExpiryDate.isBefore(currentDate);
-}
+  static bool hasExpiryDatePassed() {
+    final storedExpiryDate = getExpiryDate();
+    if (storedExpiryDate == null) {
+      return true;
+    }
 
- static void storeExpiryDate(DateTime activationDate)  {
-  final box =  Hive.box<String>(HiveBoxes.expiryDateBox);
-  final activationDateString = activationDate.toIso8601String(); 
-   box.put(HiveBoxes.expiryDateBoxKey, activationDateString);
-}
-
-static DateTime? getExpiryDate()  {
-  final box =  Hive.box<String>(HiveBoxes.expiryDateBox);
-  final activationDateString = box.get(HiveBoxes.expiryDateBoxKey);
-  if (activationDateString != null) {
-    return DateTime.parse(activationDateString); 
-  } else {
-    return null;
+    final currentDate = DateTime.now();
+    return storedExpiryDate.isBefore(currentDate);
   }
-}
+
+  static void storeExpiryDate(DateTime activationDate) {
+    final box = Hive.box<String>(HiveBoxes.expiryDateBox);
+    final activationDateString = activationDate.toIso8601String();
+    box.put(HiveBoxes.expiryDateBoxKey, activationDateString);
+  }
+
+  static DateTime? getExpiryDate() {
+    final box = Hive.box<String>(HiveBoxes.expiryDateBox);
+    final activationDateString = box.get(HiveBoxes.expiryDateBoxKey);
+    if (activationDateString != null) {
+      return DateTime.parse(activationDateString);
+    } else {
+      return null;
+    }
+  }
 }

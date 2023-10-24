@@ -15,6 +15,9 @@ class TextFieldWidget extends StatelessWidget {
   final FocusNode? focusNode;
   final TextInputFormatter? inputFormatter;
   final Color textColor;
+  final void Function(String)? onChanged;
+  final Color? cursorColor;
+  final void Function()? onTap;
 
   const TextFieldWidget(
       {super.key,
@@ -30,7 +33,12 @@ class TextFieldWidget extends StatelessWidget {
       this.onTapOutside,
       this.focusNode,
       this.inputFormatter,
-      this.textColor = Colors.white});
+      this.textColor = Colors.white,
+      this.onChanged,
+      this.cursorColor,
+      this.onTap});
+
+      
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +54,13 @@ class TextFieldWidget extends StatelessWidget {
         enabled: enabled,
         onEditingComplete: onEditingComplete,
         focusNode: focusNode,
+        cursorColor: cursorColor,
+        onTap: onTap,
         style: TextStyle(color: textColor),
-        onTapOutside: (event) {
-          FocusManager.instance.primaryFocus?.unfocus();
-        },
+        // onTapOutside: (event) {
+        //   FocusManager.instance.primaryFocus?.unfocus();
+        // },
+        onChanged: onChanged,
         readOnly: isReadOnly,
         decoration: InputDecoration(
           border: getOutlinedBorder(color),
@@ -57,7 +68,7 @@ class TextFieldWidget extends StatelessWidget {
           focusedBorder: getFocusedBorder(color),
           errorBorder: getErrorBorder(),
           disabledBorder: getDisabledBorder(),
-
+          fillColor: cursorColor,
           // errorStyle: const TextStyle(fontSize: 8),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 5,
@@ -92,5 +103,5 @@ OutlineInputBorder getErrorBorder() => const OutlineInputBorder(
       color: Colors.red,
     ));
 
-OutlineInputBorder getDisabledBorder() =>
-     OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)));
+OutlineInputBorder getDisabledBorder() => OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)));
