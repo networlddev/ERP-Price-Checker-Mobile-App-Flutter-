@@ -22,7 +22,6 @@ class Utility {
   static String formatTextToSpeech(String value) {
     List<String> parts = value.split('.');
     return "${parts[0]} and ${parts[1]}";
-    
   }
 
   static String getLastFourCharacters(String inputString) {
@@ -79,6 +78,17 @@ class Utility {
       return DateTime.parse(activationDateString);
     } else {
       return null;
+    }
+  }
+
+ static bool isImage(String url) {
+    Uri uri = Uri.parse(url);
+    String path = uri.path;
+    List<String> parts = path.split('.');
+    if (parts.length > 1) {
+      return parts.last != "Mp4";
+    } else {
+      return false;
     }
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:netpospricechecker/core/network/api_urls.dart';
 import 'package:netpospricechecker/core/network/object_convertor.dart';
 
 class APIService {
