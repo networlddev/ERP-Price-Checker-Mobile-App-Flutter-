@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:http/http.dart';
 import 'package:netpospricechecker/models/activation_key.dart';
+import 'package:netpospricechecker/models/images_model.dart';
 import 'package:netpospricechecker/models/product_details.dart';
 import 'package:netpospricechecker/models/result_model.dart';
 import 'package:netpospricechecker/models/stock_details.dart';
@@ -11,6 +11,7 @@ class CreateObject {
   static const activationKeyModel = 'activation';
   static const priceChecker = 'price_checker';
   static const stockDetails = "stock_details";
+  static const imagesObject = "images";
 
   static dynamic decodeObject(
     String response,
@@ -38,8 +39,10 @@ class CreateObject {
         return ActivationKey.fromJson(data);
       case priceChecker:
         return ProductDetails.fromJson(data);
-        case stockDetails:
+      case stockDetails:
         return StockDetails.fromJson(data);
+      case imagesObject:
+        return Images.fromJson(data);
       default:
         return 'No model Fonund';
     }

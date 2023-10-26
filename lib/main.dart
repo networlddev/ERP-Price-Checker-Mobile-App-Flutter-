@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:netpospricechecker/app_constants/hive_boxes.dart';
-import 'package:netpospricechecker/app_constants/strings.dart';
 import 'package:netpospricechecker/core/routes_manager.dart';
 import 'package:netpospricechecker/view/navigation_check.dart';
-import 'package:netpospricechecker/view/price_checker_screen.dart';
 import 'package:netpospricechecker/view_models/price_checker_view_model.dart';
 import 'package:netpospricechecker/view_models/user_validation_view_model.dart';
 import 'package:provider/provider.dart';
