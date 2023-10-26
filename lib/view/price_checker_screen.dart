@@ -107,67 +107,21 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                                       )),
                                 ),
                               ),
-                              CustomContainerWidget(
-                                height: size.height * 0.1,
-                                width: size.width * 0.2,
-                                isBackgroundColor: false,
-                                color: Colors.white,
-                                widget: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Image.asset(
-                                      ImagesPath.customerLogoImage,
-                                      fit: BoxFit.fitHeight,
-                                    )),
+                              InkWell(
+                                onTap: () => context.read<PriceCheckerViewModel>().refreshData(),
+                                child: CustomContainerWidget(
+                                  height: size.height * 0.1,
+                                  width: size.width * 0.2,
+                                  isBackgroundColor: false,
+                                  color: Colors.white,
+                                  widget: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: Image.asset(
+                                        ImagesPath.customerLogoImage,
+                                        fit: BoxFit.fitHeight,
+                                      )),
+                                ),
                               ),
-                              // SizedBox(
-                              //   width: size.width * 0.2,
-                              //   height: size.width * 0.1,
-                              //   child: NoKeyboardEditableText(
-                              //     controller: _controllerBarcode,
-                              //     //  hintText: '',
-                              //     //  autoFocus: true,
-                              //     //   isReadOnly: true,
-                              //     //    focusNode: barcodeFocusNode,
-
-                              //     // color: Colors.transparent,
-                              //     // cursorColor: Colors.transparent,
-                              //     // textColor: Colors.transparent,
-                              //     // keyboardType: TextInputType.multiline,
-                              //     // onTap: () {
-                              //     //    SystemChannels.textInput.invokeMethod('TextInput.hide');
-                              //     // },
-                              //     // onEditingComplete: () =>  SystemChannels.textInput.invokeMethod('TextInput.hide'),
-                              //     // style: const TextStyle(),
-                              //     // cursorColor: Colors.transparent,
-                              //     style: const TextStyle(
-                              //         fontSize: 20, color: Colors.white),
-                              //     cursorColor: Colors.white,
-                              //     onChanged: (text) {
-                              //       print(text);
-
-                              //       // if (text.endsWith('\n')) {
-                              //       //   String filter =
-                              //       //       text.substring(0, text.length - 1);
-                              //       //   _controllerBarcode.value = TextEditingValue(
-                              //       //     text: filter,
-                              //       //     selection: TextSelection.collapsed(
-                              //       //         offset: filter.length),
-                              //       //   );
-                              //       //   context
-                              //       //       .read<PriceCheckerViewModel>()
-                              //       //       .checkPrice(filter);
-                              //       //   _controllerBarcode.text = "";
-                              //       //   if (showDetails) {
-                              //       //     setState(() {
-                              //       //       showDetails = false;
-                              //       //     });
-                              //       //   }
-                              //       // }
-                              //       // FocusScope.of(context)
-                              //       //     .requestFocus(barcodeFocusNode);
-                              //     },
-                              //   ),
-                              // )
                             ],
                           ),
                         ),

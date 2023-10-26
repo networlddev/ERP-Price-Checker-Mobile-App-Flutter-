@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hive/hive.dart';
 import 'package:netpospricechecker/app_constants/hive_boxes.dart';
+import 'package:netpospricechecker/app_constants/strings.dart';
 import 'package:netpospricechecker/core/network/api_service.dart';
 import 'package:netpospricechecker/core/network/api_urls.dart';
 import 'package:netpospricechecker/core/network/object_convertor.dart';
@@ -11,6 +12,8 @@ import 'package:netpospricechecker/core/utils/utility.dart';
 import 'package:netpospricechecker/models/images_model.dart';
 import 'package:netpospricechecker/models/product_details.dart';
 import 'package:netpospricechecker/models/stock_details.dart';
+
+import '../core/utils/toast_utility.dart';
 
 class PriceCheckerViewModel extends ChangeNotifier {
   bool _isLoading = false;
@@ -39,10 +42,9 @@ class PriceCheckerViewModel extends ChangeNotifier {
   Future<void> fetchImages({bool isRefreshed = false}) async {
     if (!imagesFetched || isRefreshed) {
       var url = Hive.box(HiveBoxes.urlBox).get(HiveBoxes.urlBoxKey);
-      final Images? result = await APIService.callGetRequest(
+      final dynamic result = await APIService.callGetRequest(
           "$url${ApiUrls.priceCheckerUrl}GetPriceCheckerImages/1",
           CreateObject.imagesObject);
-
       if (result != null) {
         if (result.item != null) {
           if (result.item!.isNotEmpty) {
@@ -59,11 +61,26 @@ class PriceCheckerViewModel extends ChangeNotifier {
   Future<void> checkPrice(String barcode) async {
     var url = Hive.box(HiveBoxes.urlBox).get(HiveBoxes.urlBoxKey);
     var requestUrlPriceChecker = "$url${ApiUrls.priceCheckerUrl}$barcode";
-    final ProductDetails result = await APIService.callGetRequest(
+    final dynamic result = await APIService.callGetRequest(
       requestUrlPriceChecker,
       CreateObject.priceChecker,
       isPriceCheckerUrl: true,
     );
+
+    if (result == null) {
+      await configureTts();
+      speakText(AppConstantsStrings.itemNotFound);
+      ToastUtility.show(AppConstantsStrings.itemNotFound, ToastType.error);
+      clearScannedValue();
+      return;
+    } else if (result != null && result is String) {
+      await configureTts();
+      speakText(result);
+      ToastUtility.show(result, ToastType.error);
+      clearScannedValue();
+      return;
+    }
+    
     String? name = extractName(result.name!);
     productDetails = result;
     var requestUrlProductDetails = "$url${ApiUrls.stockDetailsUrl}$barcode";

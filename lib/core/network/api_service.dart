@@ -36,7 +36,7 @@ class APIService {
         print('Bad request');
       }
     } catch (e) {
-      print('Something went wrong ==> ${e.toString()}');
+      return "Sorry the server is temporarily unavailable";
     }
   }
 }

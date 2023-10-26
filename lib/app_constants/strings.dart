@@ -11,4 +11,6 @@ class AppConstantsStrings {
   static const textFetchKey = "Fetch Key";
   static const textCompanyCode = "Company Code";
   static const textCompanyName = "Company Name";
+  static const itemNotFound =
+      "Item not found, Please! contact customer service.";
 }
