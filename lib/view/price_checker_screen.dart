@@ -116,8 +116,8 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                                   color: Colors.white,
                                   widget: ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
-                                      child: Image.asset(
-                                        ImagesPath.customerLogoImage,
+                                      child: Image.network(
+                                        ImagesPath.getCustomerImagePath(),
                                         fit: BoxFit.fitHeight,
                                       )),
                                 ),
