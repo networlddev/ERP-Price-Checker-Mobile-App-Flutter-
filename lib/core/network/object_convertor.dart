@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:netpospricechecker/models/activation_key.dart';
+import 'package:netpospricechecker/models/company_logo_state_model.dart';
 import 'package:netpospricechecker/models/images_model.dart';
 import 'package:netpospricechecker/models/product_details.dart';
 import 'package:netpospricechecker/models/result_model.dart';
@@ -12,6 +13,7 @@ class CreateObject {
   static const priceChecker = 'price_checker';
   static const stockDetails = "stock_details";
   static const imagesObject = "images";
+  static const companyLogo = "company_logo";
 
   static dynamic decodeObject(
     String response,
@@ -43,6 +45,8 @@ class CreateObject {
         return StockDetails.fromJson(data);
       case imagesObject:
         return Images.fromJson(data);
+        case companyLogo:
+        return CompanyLogoState.fromJson(data);
       default:
         return 'No model Fonund';
     }

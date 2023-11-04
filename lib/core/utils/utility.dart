@@ -19,9 +19,70 @@ class Utility {
     return result;
   }
 
-  static String formatTextToSpeech(String value) {
+  // static String formatTextToSpeech(
+  //   String value, {
+  //   String? state,
+  // }) {
+  //   List<String> parts = value.split('.');
+
+  //   var result = '';
+
+  //   if (state == 'oman') {
+  //     result = "${parts[0]} rial, and, ${parts[1]} baisas";
+  //   } else {
+  //     result = "${parts[0]} dirham, and, ${parts[1]} Fils";
+  //   }
+
+  //   return result;
+  // }
+
+  static String formatTextToSpeech(
+    String value, {
+    String? state,
+  }) {
     List<String> parts = value.split('.');
-    return "${parts[0]} and ${parts[1]}";
+
+    var result = '';
+    var part1 = parts[1];
+
+    if (state == '3') {
+      if (part1.length == 1) {
+        part1 = '${part1}00';
+      }
+      result = "${parts[0]} rial, and, $part1 baisa";
+    } else {
+      if (part1.length == 1) {
+        part1 = '${part1}0';
+      }
+      result = "${parts[0]} dirham, and, $part1 Fils";
+    }
+
+    return result;
+  }
+
+
+  static String formatPrice(
+    String value, {
+    String? state,
+  }) {
+    List<String> parts = value.split('.');
+
+    var result = '';
+    var part1 = parts[1];
+
+    if (state == '3') {
+      if (part1.length == 1) {
+        part1 = '${part1}00';
+      }
+      result = "${parts[0]}.$part1";
+    } else {
+      if (part1.length == 1) {
+        part1 = '${part1}0';
+      }
+      result = "${parts[0]}.$part1";
+    }
+
+    return result;
   }
 
   static String getLastFourCharacters(String inputString) {
@@ -81,7 +142,7 @@ class Utility {
     }
   }
 
- static bool isImage(String url) {
+  static bool isImage(String url) {
     Uri uri = Uri.parse(url);
     String path = uri.path;
     List<String> parts = path.split('.');

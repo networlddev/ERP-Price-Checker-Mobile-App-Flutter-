@@ -22,12 +22,13 @@ class _NavigationCheckState extends State<NavigationCheck> {
   // }
 
   // void getImages() {
-    
+
   // }
 
   @override
   Widget build(BuildContext context) {
-    page = NavigationCheckUtility.getNavigationPage();
+   // return PriceCheckerScreen();
+   page = NavigationCheckUtility.getNavigationPage();
     switch (page) {
       case Pages.priceCheckerScreen:
         return const PriceCheckerScreen();

@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hive/hive.dart';
 import 'package:netpospricechecker/app_constants/hive_boxes.dart';
+import 'package:netpospricechecker/app_constants/images_paths.dart';
 import 'package:netpospricechecker/app_constants/strings.dart';
 import 'package:netpospricechecker/core/network/api_service.dart';
 import 'package:netpospricechecker/core/network/api_urls.dart';
 import 'package:netpospricechecker/core/network/object_convertor.dart';
 import 'package:netpospricechecker/core/utils/utility.dart';
+import 'package:netpospricechecker/models/company_logo_state_model.dart';
 import 'package:netpospricechecker/models/images_model.dart';
 import 'package:netpospricechecker/models/product_details.dart';
 import 'package:netpospricechecker/models/stock_details.dart';
@@ -19,6 +21,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
   bool _isLoading = false;
   ProductDetails? productDetails;
   String productName = "";
+  String price = '';
   StockDetails stockDetails = StockDetails();
   FlutterTts flutterTts = FlutterTts();
   Timer? timer;
@@ -26,6 +29,8 @@ class PriceCheckerViewModel extends ChangeNotifier {
   Timer? imagesTimer;
   bool showImages = false;
   bool imagesFetched = false;
+  String status = '0';
+  String decimalState = "2";
 
   void setLoading(bool isLoading) {
     _isLoading = isLoading;
@@ -45,6 +50,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
       final dynamic result = await APIService.callGetRequest(
           "$url${ApiUrls.priceCheckerUrl}GetPriceCheckerImages/1",
           CreateObject.imagesObject);
+
       if (result != null) {
         if (result.item != null) {
           if (result.item!.isNotEmpty) {
@@ -55,12 +61,45 @@ class PriceCheckerViewModel extends ChangeNotifier {
         }
       }
       imagesFetched = true;
+
+      final CompanyLogoState resultForDecimalState =
+          await APIService.callGetRequest(
+        "$url${ApiUrls.priceCheckerUrl}ParamDecimalCount",
+        CreateObject.companyLogo,
+        isPriceCheckerUrl: true,
+        isValidationUrl: false,
+      );
+
+      if (resultForDecimalState.state != null) {
+        decimalState = resultForDecimalState.state!;
+      }
     }
+  }
+
+  Future<String?> fetchCompanyImageStatus() async {
+    var url = Hive.box(HiveBoxes.urlBox).get(HiveBoxes.urlBoxKey);
+
+    final CompanyLogoState resultForCompanyLogo =
+        await APIService.callGetRequest(
+      "$url${ApiUrls.priceCheckerUrl}ParamNetworldNogo",
+      CreateObject.companyLogo,
+      isPriceCheckerUrl: true,
+      isValidationUrl: false,
+    );
+    if (resultForCompanyLogo.state != null) {
+      if (resultForCompanyLogo.state == "1") {
+        return ImagesPath.networldLogoImage1;
+      } else {
+        return ImagesPath.networldLogoImage;
+      }
+    }
+    return null;
   }
 
   Future<void> checkPrice(String barcode) async {
     var url = Hive.box(HiveBoxes.urlBox).get(HiveBoxes.urlBoxKey);
     var requestUrlPriceChecker = "$url${ApiUrls.priceCheckerUrl}$barcode";
+    //  var requestUrlPriceChecker = "http://192.168.0.250:1004${ApiUrls.priceCheckerUrl}$barcode";
     final dynamic result = await APIService.callGetRequest(
       requestUrlPriceChecker,
       CreateObject.priceChecker,
@@ -80,9 +119,12 @@ class PriceCheckerViewModel extends ChangeNotifier {
       clearScannedValue();
       return;
     }
-    
+
     String? name = extractName(result.name!);
     productDetails = result;
+
+    price = Utility.formatPrice(result.salesPrice!.toString(), state: decimalState);
+    //salesPrice
     var requestUrlProductDetails = "$url${ApiUrls.stockDetailsUrl}$barcode";
     final StockDetails? stock = await APIService.callGetRequest(
       requestUrlProductDetails,
@@ -98,8 +140,9 @@ class PriceCheckerViewModel extends ChangeNotifier {
     handleBarcodeScan();
     handleAdsImage(true);
     notifyListeners();
-    String textToSpeak =
-        Utility.formatTextToSpeech(result.salesPrice.toString());
+    String textToSpeak = Utility.formatTextToSpeech(
+        result.salesPrice.toString(),
+        state: decimalState);
     await configureTts();
     speakText(textToSpeak);
   }
@@ -134,7 +177,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
   }
 
   Future<void> configureTts() async {
-    await flutterTts.setLanguage('en-gb');
+    await flutterTts.setLanguage('en-us');
     await flutterTts.setSpeechRate(0.0);
     await flutterTts.setVolume(1.0);
   }
