@@ -127,7 +127,9 @@ class _SharedFolderConfigScreenState extends State<SharedFolderConfigScreen> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: TextFieldWidget(
                                           controller: _baseUrlController,
-                                          hintText: '',
+                                          hintColor: Colors.grey.shade400,
+                                          hintText:
+                                              'Hint: www.google.com:xyzz...',
                                           validator: (value) => ValidationUtils
                                               .validateEmptyTextField(value),
                                         ),

@@ -18,12 +18,14 @@ class TextFieldWidget extends StatelessWidget {
   final void Function(String)? onChanged;
   final Color? cursorColor;
   final void Function()? onTap;
+  final Color? hintColor;
 
   const TextFieldWidget(
       {super.key,
       required this.controller,
       required this.hintText,
       this.color = Colors.blueGrey,
+      this.hintColor = Colors.grey,
       this.isReadOnly = false,
       this.keyboardType,
       this.validator,
@@ -37,8 +39,6 @@ class TextFieldWidget extends StatelessWidget {
       this.onChanged,
       this.cursorColor,
       this.onTap});
-
-      
 
   @override
   Widget build(BuildContext context) {
@@ -69,14 +69,16 @@ class TextFieldWidget extends StatelessWidget {
           errorBorder: getErrorBorder(),
           disabledBorder: getDisabledBorder(),
           fillColor: cursorColor,
+
           // errorStyle: const TextStyle(fontSize: 8),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 5,
           ),
           floatingLabelStyle: TextStyle(color: color),
-          hintStyle: const TextStyle(color: Colors.grey, fontSize: 10),
+          hintStyle:  TextStyle(color: hintColor, fontSize: 10),
           hintText: hintText,
           labelText: hintText,
+          labelStyle: TextStyle(color: hintColor, fontSize: 14),
         ),
       ),
     );

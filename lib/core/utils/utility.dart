@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:netpospricechecker/app_constants/hive_boxes.dart';
@@ -49,17 +51,27 @@ class Utility {
       if (part1.length == 1) {
         part1 = '${part1}00';
       }
-      result = "${parts[0]} rial, and, $part1 baisa";
+      if (part1 == "000") {
+        result = "${parts[0]} rial";
+      } else {
+        String replacedPart1 = part1.replaceAll("0", "zero");
+        result = "${parts[0]} rial, and, $replacedPart1 baisa";
+      }
     } else {
       if (part1.length == 1) {
         part1 = '${part1}0';
       }
-      result = "${parts[0]} dirham, and, $part1 Fils";
+        if (part1 == "00") {
+        result = "${parts[0]} dirham";
+      } else {
+        String replacedPart1 = part1.replaceAll("0", "zero");
+        result = "${parts[0]} dirham, and, $replacedPart1 Fils";
+      }
+    //  result = "${parts[0]} dirham, and, $part1 Fils";
     }
 
     return result;
   }
-
 
   static String formatPrice(
     String value, {
@@ -105,8 +117,7 @@ class Utility {
         DateTime currentDate = DateTime.now();
         DateTime activationDate = currentDate.add(Duration(days: days));
 
-        print(
-            'Activation Date: ${DateFormat('yyyy-MM-dd').format(activationDate)}');
+        log('Activation Date: ${DateFormat('yyyy-MM-dd').format(activationDate)}');
 
         return activationDate;
       } catch (e) {

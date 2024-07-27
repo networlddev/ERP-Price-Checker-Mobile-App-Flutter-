@@ -27,7 +27,7 @@ class CustomContainerWidget extends StatelessWidget {
       alignment: alignment,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
-        color: isBackgroundColor ? Colors.white.withOpacity(0.1) : color != null ? color : null,
+        color: isBackgroundColor ? Colors.white : color != null ? color : null,
       ),
       child: Center(child: widget),
     );

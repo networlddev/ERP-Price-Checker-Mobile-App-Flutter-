@@ -86,7 +86,7 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                                 setState(() {
                                   showDetails = !showDetails;
                                 });
-                                Future.delayed(const Duration(seconds: 30), () {
+                                Future.delayed(const Duration(seconds: 3), () {
                                   if (showDetails) {
                                     setState(() {
                                       showDetails = false;
@@ -168,20 +168,22 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const TextWidget(
-                                  txt: 'Price',
-                                  fontSize: 20,
+                                  txt: 'Price  سعر',
+                                  fontSize: 30,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
                                 ),
                                 isLoading
                                     ? const Center(
                                         child: CircularProgressIndicator(
-                                          color: Colors.white,
+                                          color: Colors.blue,
                                         ),
                                       )
                                     : TextWidget(
                                         txt: formattedPrice,
                                         fontSize: 120,
                                         fontWeight: FontWeight.bold,
+                                         color: Colors.blue,
                                       ),
                               ]),
                         ),
@@ -205,39 +207,40 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
                                   textAlign: TextAlign.start,
+                                  color: Colors.blue,
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 250, vertical: 20),
-                        child: CustomContainerWidget(
-                          height: size.height * 0.1,
-                          width: double.infinity,
-                          alignment: Alignment.centerLeft,
-                          radius: 35,
-                          widget: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  left: 50,
-                                ),
-                                child: TextWidget(
-                                  txt:
-                                      'Check Price here        تحقق من السعر هنا',
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(
+                      //       horizontal: 250, vertical: 20),
+                      //   child: CustomContainerWidget(
+                      //     height: size.height * 0.1,
+                      //     width: double.infinity,
+                      //     alignment: Alignment.centerLeft,
+                      //     radius: 35,
+                      //     widget: const Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Padding(
+                      //           padding: EdgeInsets.only(
+                      //             left: 50,
+                      //           ),
+                      //           child: TextWidget(
+                      //             txt:
+                      //                 'Check Price here        تحقق من السعر هنا',
+                      //             fontSize: 30,
+                      //             fontWeight: FontWeight.bold,
+                      //             textAlign: TextAlign.start,
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -251,11 +254,13 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                       },
                     )
                   : const SizedBox(),
-              showAds && imgList != null
+              showAds ? imgList != null
                   ? ImageSliderWidget(
                       imgList: imgList,
                     )
-                  : SizedBox(),
+                  : ImageSliderWidget(
+                      imgList: null,
+                    ) : SizedBox(),
             ]),
           ),
         ),

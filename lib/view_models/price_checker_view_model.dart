@@ -47,13 +47,14 @@ class PriceCheckerViewModel extends ChangeNotifier {
   Future<void> fetchImages({bool isRefreshed = false}) async {
     if (!imagesFetched || isRefreshed) {
       var url = Hive.box(HiveBoxes.urlBox).get(HiveBoxes.urlBoxKey);
-      final dynamic result = await APIService.callGetRequest(
+      final Images? result = await APIService.callGetRequest(
           "$url${ApiUrls.priceCheckerUrl}GetPriceCheckerImages/1",
-          CreateObject.imagesObject);
+          CreateObject.imagesObject) as Images?;
 
       if (result != null) {
         if (result.item != null) {
           if (result.item!.isNotEmpty) {
+           
             images = result.item;
             print("runnnig ====>> ${images!.length}");
             notifyListeners();
@@ -152,7 +153,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
       timer!.cancel();
     }
 
-    timer = Timer(const Duration(seconds: 50), clearScannedValue);
+    timer = Timer(const Duration(seconds: 10), clearScannedValue);
   }
 
   void handleAdsImage(bool hideImages) {
@@ -163,7 +164,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
       showImages = false;
       notifyListeners();
     }
-    imagesTimer = Timer(const Duration(seconds: 60), () {
+    imagesTimer = Timer(const Duration(seconds: 12), () {
       showImages = !showImages;
       notifyListeners();
     });
