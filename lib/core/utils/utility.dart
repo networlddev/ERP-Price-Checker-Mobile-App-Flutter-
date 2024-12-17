@@ -51,23 +51,31 @@ class Utility {
       if (part1.length == 1) {
         part1 = '${part1}00';
       }
+      if (part1.length == 2) {
+        part1 = '${part1}0';
+      }
       if (part1 == "000") {
         result = "${parts[0]} rial";
       } else {
-        String replacedPart1 = part1.replaceAll("0", "zero");
+        // String replacedPart1 = part1.replaceAll("0", "zero");
+        // List<String> splittedPart1 = replacedPart1.split("");
+        // result = "${parts[0]} rial, and, ${splittedPart1[0]}${splittedPart1[1]}${splittedPart1[2]} baisa";
+
+         String replacedPart1 = part1.replaceAll("0", "zero");
+         
         result = "${parts[0]} rial, and, $replacedPart1 baisa";
       }
     } else {
       if (part1.length == 1) {
         part1 = '${part1}0';
       }
-        if (part1 == "00") {
+      if (part1 == "00") {
         result = "${parts[0]} dirham";
       } else {
         String replacedPart1 = part1.replaceAll("0", "zero");
         result = "${parts[0]} dirham, and, $replacedPart1 Fils";
       }
-    //  result = "${parts[0]} dirham, and, $part1 Fils";
+      //  result = "${parts[0]} dirham, and, $part1 Fils";
     }
 
     return result;
@@ -85,6 +93,9 @@ class Utility {
     if (state == '3') {
       if (part1.length == 1) {
         part1 = '${part1}00';
+      }
+      if (part1.length == 2) {
+        part1 = '${part1}0';
       }
       result = "${parts[0]}.$part1";
     } else {
