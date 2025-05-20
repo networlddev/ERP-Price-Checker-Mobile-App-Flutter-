@@ -1,4 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_slider.dart' as cs;
 import 'package:flutter/material.dart';
 import 'package:netpospricechecker/app_constants/images_paths.dart';
 import 'package:netpospricechecker/core/utils/utility.dart';
@@ -45,13 +45,13 @@ class _ImageSliderWidgetState extends State<ImageSliderWidget> {
           child:
           //  widget.imgList!.isNotEmpty
           //     ? 
-              CarouselSlider(
+              cs.CarouselSlider(
                   // disableGesture: false,
-                  options: CarouselOptions(
+                  options: cs.CarouselOptions(
                     autoPlay: true,
                     aspectRatio: 1.0,
                     enlargeCenterPage: true,
-                    enlargeStrategy: CenterPageEnlargeStrategy.height,
+                    enlargeStrategy: cs.CenterPageEnlargeStrategy.height,
                     viewportFraction: 1.0,
                     pauseAutoPlayOnTouch: false,
                     pauseAutoPlayOnManualNavigate: false,

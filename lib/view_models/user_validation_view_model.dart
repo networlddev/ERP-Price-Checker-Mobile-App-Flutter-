@@ -156,7 +156,7 @@ class UserValidationViewModel extends ChangeNotifier {
       CreateObject.validateModel,
       body: body,
     );
-    if (validationModel?.message != "") {
+    if (validationModel?.result ?? false) {
       ToastUtility.show("Key Fetched", ToastType.success);
       log(validationModel?.message);
       Hive.box(HiveBoxes.authenticationBox)

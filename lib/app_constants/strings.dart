@@ -2,6 +2,7 @@ class AppConstantsStrings {
   AppConstantsStrings._();
 
   static const textBaseUrl = "Base URL";
+  static const textPort = "Port";
   static const textSharedFolder = "Shared Folder";
   static const textUserName = "User Name";
   static const textPassword = "Password";

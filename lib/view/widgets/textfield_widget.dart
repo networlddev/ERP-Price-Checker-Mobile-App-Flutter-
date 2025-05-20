@@ -19,13 +19,15 @@ class TextFieldWidget extends StatelessWidget {
   final Color? cursorColor;
   final void Function()? onTap;
   final Color? hintColor;
+  final bool filled;
+  final Color? fillColor;
 
   const TextFieldWidget(
       {super.key,
       required this.controller,
       required this.hintText,
-      this.color = Colors.blueGrey,
-      this.hintColor = Colors.grey,
+      this.color = Colors.blue,
+      this.hintColor ,
       this.isReadOnly = false,
       this.keyboardType,
       this.validator,
@@ -33,9 +35,11 @@ class TextFieldWidget extends StatelessWidget {
       this.enabled = true,
       this.onEditingComplete,
       this.onTapOutside,
+      this.filled = true,
+      this.fillColor = Colors.white,
       this.focusNode,
       this.inputFormatter,
-      this.textColor = Colors.white,
+      this.textColor = Colors.black,
       this.onChanged,
       this.cursorColor,
       this.onTap});
@@ -63,17 +67,20 @@ class TextFieldWidget extends StatelessWidget {
         onChanged: onChanged,
         readOnly: isReadOnly,
         decoration: InputDecoration(
-          border: getOutlinedBorder(color),
-          enabledBorder: getEnabledBorder(color),
+          border: getOutlinedBorder(fillColor),
+          enabledBorder: getEnabledBorder(fillColor),
           focusedBorder: getFocusedBorder(color),
+          
           errorBorder: getErrorBorder(),
           disabledBorder: getDisabledBorder(),
-          fillColor: cursorColor,
+          fillColor: fillColor,
 
           // errorStyle: const TextStyle(fontSize: 8),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 5,
           ),
+          filled: filled,
+          
           floatingLabelStyle: TextStyle(color: color),
           hintStyle:  TextStyle(color: hintColor, fontSize: 10),
           hintText: hintText,

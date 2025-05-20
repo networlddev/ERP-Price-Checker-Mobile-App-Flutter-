@@ -89,7 +89,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
     );
     if (resultForCompanyLogo.state != null) {
       if (resultForCompanyLogo.state == "1") {
-        return ImagesPath.networldLogoImage1;
+        return ImagesPath.networldLogoImage;
       } else {
         return ImagesPath.networldLogoImage;
       }
