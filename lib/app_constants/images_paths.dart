@@ -5,6 +5,7 @@ import 'package:netpospricechecker/core/network/api_urls.dart';
 class ImagesPath {
   static const backgroundImage = 'assets/price_checker.jpg';
   static const networldLogoImage = 'assets/networld-logo.png';
+  static const networldHomePageLogo = 'assets/networld-logo.jpg';
   static const networldLogoImage1 = 'assets/networld-logo-1.png';
 
   static const customerLogoImage = 'assets/price_checker_customer_logo.jpeg';
