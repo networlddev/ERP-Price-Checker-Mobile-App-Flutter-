@@ -10,6 +10,7 @@ import 'package:netpospricechecker/core/network/api_urls.dart';
 import 'package:netpospricechecker/core/network/object_convertor.dart';
 import 'package:netpospricechecker/core/utils/toast_utility.dart';
 import 'package:netpospricechecker/core/utils/utility.dart';
+import 'package:netpospricechecker/models/user_info_model.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class UserValidationViewModel extends ChangeNotifier {
@@ -47,6 +48,11 @@ class UserValidationViewModel extends ChangeNotifier {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String lastFourCharacters = Utility.getLastFourCharacters(qrCodeProductKey);
     String productKey = Utility.convertIpAddress(qrCodeProductKey);
+        UserDeviceInformation? userDeviceInformation =
+        await Utility.getUserDeviceInformation();
+String activationFormatModelNumber = Utility.convertIntoActivationFormat(
+        userDeviceInformation!.userDeviceId,
+        sdk: userDeviceInformation.deviceSdk);
 
     Map<String, dynamic> body = {};
     try {
@@ -56,7 +62,7 @@ class UserValidationViewModel extends ChangeNotifier {
           "custCode": customerCode,
           "custName": companyName,
           "deviceName": "${androidInfo.device}-$lastFourCharacters",
-          "modelNo": androidInfo.model,
+          "modelNo": activationFormatModelNumber,
           "type": "PRICECHEAKER",
           "productKey": productKey,
           "version": packageInfo.version
@@ -69,7 +75,7 @@ class UserValidationViewModel extends ChangeNotifier {
           "custCode": customerCode,
           "custName": companyName,
           "deviceName": "${iosInfo.name}-$lastFourCharacters",
-          "modelNo": iosInfo.model,
+          "modelNo": activationFormatModelNumber,
           "type": "PRICECHEAKER",
           "productKey": productKey,
           "version": packageInfo.version
@@ -113,7 +119,11 @@ class UserValidationViewModel extends ChangeNotifier {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String lastFourCharacters = Utility.getLastFourCharacters(qrCodeProductKey);
     String productKey = Utility.convertIpAddress(qrCodeProductKey);
-
+     UserDeviceInformation? userDeviceInformation =
+        await Utility.getUserDeviceInformation();
+String activationFormatModelNumber = Utility.convertIntoActivationFormat(
+        userDeviceInformation!.userDeviceId,
+        sdk: userDeviceInformation.deviceSdk);
     // setLoading(true);
     // String productKey = Utility.convertIpAddress(qrCodeProductKey);
 
@@ -127,7 +137,7 @@ class UserValidationViewModel extends ChangeNotifier {
           "custCode": customerCode,
           "custName": companyNameState,
           "deviceName": "${androidInfo.device}-$lastFourCharacters",
-          "modelNo": androidInfo.model,
+          "modelNo": activationFormatModelNumber,
           "type": "PRICECHEAKER",
           "productKey": productKey,
           "version": packageInfo.version
@@ -140,7 +150,7 @@ class UserValidationViewModel extends ChangeNotifier {
           "custCode": customerCode,
           "custName": companyNameState,
           "deviceName": "${iosInfo.name}-$lastFourCharacters",
-          "modelNo": iosInfo.model,
+          "modelNo": activationFormatModelNumber,
           "type": "PRICECHEAKER",
           "productKey": productKey,
           "version": packageInfo.version

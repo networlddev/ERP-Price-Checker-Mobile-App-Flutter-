@@ -1,0 +1,2 @@
+C:/Fakhar/Networld_projects/NETPOS-PRICE-CHECKER/android/app/.cxx/RelWithDebInfo/5h256e1l/x86_64/CMakeFiles/edit_cache.dir
+C:/Fakhar/Networld_projects/NETPOS-PRICE-CHECKER/android/app/.cxx/RelWithDebInfo/5h256e1l/x86_64/CMakeFiles/rebuild_cache.dir

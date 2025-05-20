@@ -1,8 +1,11 @@
 import 'dart:developer';
 
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:netpospricechecker/app_constants/hive_boxes.dart';
+import 'package:netpospricechecker/models/user_info_model.dart';
 
 class Utility {
   static String convertIpAddress(String ipAddress) {
@@ -20,6 +23,77 @@ class Utility {
 
     return result;
   }
+
+  static String convertIntoActivationFormat(String value, {int? sdk = 25}) {
+  RegExp regex = RegExp(r'[a-zA-Z0-9]+');
+  Iterable<Match> matches = regex.allMatches(value);
+
+  String input = matches.map((match) => match.group(0)).join('');
+  List<String> parts = input.split('-');
+
+  String result = '';
+
+  for (String part in parts) {
+    result += part;
+  }
+
+  if (result.length > 9) {
+    result = result.substring(0, 9);
+  } else if (result.length < 9) {
+    do {
+      result += "0";
+    } while (result.length == 9);
+  }
+
+  String part1 = result.substring(0, 3);
+  String part2 = result.substring(3, 6);
+  String part3 = "";
+  if (sdk! > 24) {
+    part3 = result.substring(6, 9);
+  } else {
+    part3 = "000";
+  }
+
+  return "$part1-$part2-$part3";
+}
+
+
+static Future<UserDeviceInformation?> getUserDeviceInformation() async {
+  final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+  String userDeviceName = "";
+
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    final AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
+    String brand = androidInfo.brand;
+    String modelNumber = androidInfo.product;
+    String androidId = androidInfo.id;
+
+    log(androidInfo.version.sdkInt.toString());
+
+    userDeviceName = "$brand-$modelNumber";
+
+    return UserDeviceInformation(
+        userDeviceId: androidId,
+        userDeviceName: userDeviceName,
+        userDeviceModel: androidInfo.model,
+        deviceSdk: androidInfo.version.sdkInt);
+  } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+    IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
+    String brand = iosInfo.name;
+    String modelNumber = iosInfo.model;
+    String iosId = iosInfo.identifierForVendor!;
+
+    userDeviceName = "$brand-$modelNumber";
+
+    return UserDeviceInformation(
+      userDeviceId: iosId,
+      userDeviceName: userDeviceName,
+      userDeviceModel: iosInfo.model,
+    );
+  } else {
+    return null;
+  }
+}
 
   // static String formatTextToSpeech(
   //   String value, {
