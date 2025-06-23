@@ -21,6 +21,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
   bool _isLoading = false;
   ProductDetails? productDetails;
   String productName = "";
+  String barcode = "";
   String price = '';
   StockDetails stockDetails = StockDetails();
   FlutterTts flutterTts = FlutterTts();
@@ -136,6 +137,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
     if (stock != null && productDetails != null) {
       stockDetails = stock;
       productName = name!;
+      this.barcode = barcode;
     }
 
     handleBarcodeScan();
@@ -173,6 +175,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
   void clearScannedValue() {
     stockDetails = StockDetails();
     productName = "";
+    barcode = "";
     productDetails = null;
     notifyListeners();
   }

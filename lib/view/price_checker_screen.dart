@@ -1,6 +1,7 @@
+import 'package:barcode/barcode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_listener/flutter_barcode_listener.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:netpospricechecker/app_constants/images_paths.dart';
 import 'package:netpospricechecker/models/images_model.dart';
 import 'package:netpospricechecker/models/product_details.dart';
@@ -46,6 +47,7 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
     bool isLoading = priceCheckerViewModel.isLoading;
     ProductDetails? productDetails = priceCheckerViewModel.productDetails;
     var productName = priceCheckerViewModel.productName;
+    var barcode = priceCheckerViewModel.barcode;
     imgList = priceCheckerViewModel.images;
     showAds = priceCheckerViewModel.showImages;
     status = priceCheckerViewModel.status;
@@ -76,117 +78,193 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onDoubleTap: () {
-                                setState(() {
-                                  showDetails = !showDetails;
-                                });
-                                Future.delayed(const Duration(seconds: 3), () {
-                                  if (showDetails) {
-                                    setState(() {
-                                      showDetails = false;
-                                    });
-                                  }
-                                });
-                              },
-                              child: FutureBuilder(
-                                  future: context
-                                      .read<PriceCheckerViewModel>()
-                                      .fetchCompanyImageStatus(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                        ),
-                                      );
-                                    } else if (snapshot.hasData) {
-                                      return CustomContainerWidget(
-                                        height: size.height * 0.15,
-                                        width: size.width * 0.30,
-                                        isBackgroundColor: false,
-                                        widget: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            child: Image.asset(
-                                              snapshot.data!,
-                                              fit: BoxFit.contain,
-                                            )),
-                                      );
-                                    } else {
-                                      return SizedBox();
-                                    }
-                                  }),
-                            ),
-                            SizedBox(
-                              height: 0,
-                              width: 0,
-                              child: TextFieldWidget(
-                                controller: _barcodeController,
-                                hintText: '',
-                                keyboardType: TextInputType.multiline,
-                                autoFocus: true,
-                                focusNode: _barcodeFocusNode,
-                                onChanged: (text) {
-                                  _sendRequestAndClearText(text);
-                                },
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              color: Colors.white,
+                              height: size.height * 0.05,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  TextWidget(
+                                    txt: "NETWORLD ERP",
+                                    color: Colors.blue,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  SizedBox(
+                                    height: 0,
+                                    width: 0,
+                                    child: TextFieldWidget(
+                                      controller: _barcodeController,
+                                      hintText: '',
+                                      keyboardType: TextInputType.multiline,
+                                      autoFocus: true,
+                                      focusNode: _barcodeFocusNode,
+                                      onChanged: (text) {
+                                        _sendRequestAndClearText(text);
+                                      },
+                                    ),
+                                  ),
+                                  TextWidget(
+                                    txt: "Three Star Fashion",
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ],
                               ),
                             ),
-                            InkWell(
-                              onTap: () => context
-                                  .read<PriceCheckerViewModel>()
-                                  .refreshData(),
-                              child: CustomContainerWidget(
-                                height: size.height * 0.15,
-                                width: size.width * 0.25,
-                                isBackgroundColor: false,
-                                color: Colors.white,
-                                widget: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Image.network(
-                                      ImagesPath.getCustomerImagePath(),
-                                      fit: BoxFit.fitHeight,
-                                    )),
-                              ),
-                            ),
-                          ],
-                        ),
+                          )
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 40, 10, 20),
-                        child: CustomContainerWidget(
-                          height: size.height * 0.4,
-                          width: size.width * 0.6,
-                          widget: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const TextWidget(
-                                  txt: 'Price  سعر',
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
-                                ),
-                                isLoading
-                                    ? const Center(
-                                        child: CircularProgressIndicator(
-                                          color: Colors.blue,
-                                        ),
-                                      )
-                                    : TextWidget(
-                                        txt: formattedPrice,
-                                        fontSize: 120,
-                                        fontWeight: FontWeight.bold,
-                                         color: Colors.blue,
+                      // Padding(
+                      //   padding: const EdgeInsets.all(20),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //     children: [
+                      //       InkWell(
+                      //         onDoubleTap: () {
+                      //           setState(() {
+                      //             showDetails = !showDetails;
+                      //           });
+                      //           Future.delayed(const Duration(seconds: 3), () {
+                      //             if (showDetails) {
+                      //               setState(() {
+                      //                 showDetails = false;
+                      //               });
+                      //             }
+                      //           });
+                      //         },
+                      //         child: FutureBuilder(
+                      //             future: context
+                      //                 .read<PriceCheckerViewModel>()
+                      //                 .fetchCompanyImageStatus(),
+                      //             builder: (context, snapshot) {
+                      //               if (snapshot.connectionState ==
+                      //                   ConnectionState.waiting) {
+                      //                 return Center(
+                      //                   child: CircularProgressIndicator(
+                      //                     color: Colors.white,
+                      //                   ),
+                      //                 );
+                      //               } else if (snapshot.hasData) {
+                      //                 return CustomContainerWidget(
+                      //                   height: size.height * 0.15,
+                      //                   width: size.width * 0.30,
+                      //                   isBackgroundColor: false,
+                      //                   widget: ClipRRect(
+                      //                       borderRadius:
+                      //                           BorderRadius.circular(15),
+                      //                       child: Image.asset(
+                      //                         snapshot.data!,
+                      //                         fit: BoxFit.contain,
+                      //                       )),
+                      //                 );
+                      //               } else {
+                      //                 return SizedBox();
+                      //               }
+                      //             }),
+                      //       ),
+                      //       SizedBox(
+                      //         height: 0,
+                      //         width: 0,
+                      //         child: TextFieldWidget(
+                      //           controller: _barcodeController,
+                      //           hintText: '',
+                      //           keyboardType: TextInputType.multiline,
+                      //           autoFocus: true,
+                      //           focusNode: _barcodeFocusNode,
+                      //           onChanged: (text) {
+                      //             _sendRequestAndClearText(text);
+                      //           },
+                      //         ),
+                      //       ),
+                      //       InkWell(
+                      //         onTap: () => context
+                      //             .read<PriceCheckerViewModel>()
+                      //             .refreshData(),
+                      //         child: CustomContainerWidget(
+                      //           height: size.height * 0.15,
+                      //           width: size.width * 0.25,
+                      //           isBackgroundColor: false,
+                      //           color: Colors.white,
+                      //           widget: ClipRRect(
+                      //               borderRadius: BorderRadius.circular(15),
+                      //               child: Image.network(
+                      //                 ImagesPath.getCustomerImagePath(),
+                      //                 fit: BoxFit.fitHeight,
+                      //               )),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: size.height * 0.3,
+                              width: size.width * 0.45,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  CustomContainerWidget(
+                                    height: size.height * 0.15,
+                                    width: size.width * 0.45,
+                                    alignment: Alignment.bottomCenter,
+                                    widget: barcode.isNotEmpty
+                                        ? Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              BarcodeWidget(
+                                                  data: barcode,
+                                                  code: Barcode.code128()),
+                                              TextWidget(
+                                                txt: barcode,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              )
+                                            ],
+                                          )
+                                        : const SizedBox(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: PriceTagContainer(
+                              height: size.height * 0.6,
+                              width: size.width * 0.6,
+                              widget: isLoading
+                                  ? const Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.blue,
                                       ),
-                              ]),
-                        ),
+                                    )
+                                  : Container(
+                                      height: size.height * 0.4,
+                                      width: size.width * 0.4,
+                                      //  color: Colors.amber,
+                                      child: Center(
+                                        child: FittedBox(
+                                          child: TextWidget(
+                                            txt: formattedPrice,
+                                            fontSize: 150,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ],
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -207,7 +285,7 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
                                   textAlign: TextAlign.start,
-                                  color: Colors.blue,
+                                  color: Colors.black,
                                 ),
                               ),
                             ],
@@ -254,13 +332,15 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                       },
                     )
                   : const SizedBox(),
-              showAds ? imgList != null
-                  ? ImageSliderWidget(
-                      imgList: imgList,
-                    )
-                  : ImageSliderWidget(
-                      imgList: null,
-                    ) : SizedBox(),
+              showAds
+                  ? imgList != null
+                      ? ImageSliderWidget(
+                          imgList: imgList,
+                        )
+                      : ImageSliderWidget(
+                          imgList: null,
+                        )
+                  : SizedBox(),
             ]),
           ),
         ),
@@ -278,6 +358,7 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
         text: filter,
         selection: TextSelection.collapsed(offset: filter.length),
       );
+      
 
       /// you can do something
       context.read<PriceCheckerViewModel>().checkPrice(filter);
@@ -289,5 +370,27 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
         showDetails = false;
       });
     }
+  }
+}
+
+class BarcodeWidget extends StatelessWidget {
+  final String data;
+  final Barcode code;
+
+  const BarcodeWidget({super.key, required this.data, required this.code});
+
+  @override
+  Widget build(BuildContext context) {
+    final svg = code.toSvg(data, width: 600, height: 100, drawText: false);
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Center(
+        child: SvgPicture.string(
+          svg,
+          width: 600,
+          height: 50,
+        ),
+      ),
+    );
   }
 }
