@@ -21,13 +21,17 @@ class TextFieldWidget extends StatelessWidget {
   final Color? hintColor;
   final bool filled;
   final Color? fillColor;
+  final bool obscureText ;
+  final int? maxLines;
 
   const TextFieldWidget(
       {super.key,
       required this.controller,
       required this.hintText,
       this.color = Colors.blue,
+      this.obscureText = false,
       this.hintColor ,
+      this.maxLines,
       this.isReadOnly = false,
       this.keyboardType,
       this.validator,
@@ -50,7 +54,7 @@ class TextFieldWidget extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         expands: false,
-        maxLines: null,
+        maxLines: maxLines,
         validator: validator,
         inputFormatters: inputFormatter != null ? [inputFormatter!] : null,
         keyboardType: keyboardType,
@@ -60,12 +64,15 @@ class TextFieldWidget extends StatelessWidget {
         focusNode: focusNode,
         cursorColor: cursorColor,
         onTap: onTap,
+        
         style: TextStyle(color: textColor),
+        obscureText : obscureText,
         // onTapOutside: (event) {
         //   FocusManager.instance.primaryFocus?.unfocus();
         // },
         onChanged: onChanged,
         readOnly: isReadOnly,
+        
         decoration: InputDecoration(
           border: getOutlinedBorder(fillColor),
           enabledBorder: getEnabledBorder(fillColor),

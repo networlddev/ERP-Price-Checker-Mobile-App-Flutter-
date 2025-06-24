@@ -25,75 +25,74 @@ class Utility {
   }
 
   static String convertIntoActivationFormat(String value, {int? sdk = 25}) {
-  RegExp regex = RegExp(r'[a-zA-Z0-9]+');
-  Iterable<Match> matches = regex.allMatches(value);
+    RegExp regex = RegExp(r'[a-zA-Z0-9]+');
+    Iterable<Match> matches = regex.allMatches(value);
 
-  String input = matches.map((match) => match.group(0)).join('');
-  List<String> parts = input.split('-');
+    String input = matches.map((match) => match.group(0)).join('');
+    List<String> parts = input.split('-');
 
-  String result = '';
+    String result = '';
 
-  for (String part in parts) {
-    result += part;
+    for (String part in parts) {
+      result += part;
+    }
+
+    if (result.length > 9) {
+      result = result.substring(0, 9);
+    } else if (result.length < 9) {
+      do {
+        result += "0";
+      } while (result.length == 9);
+    }
+
+    String part1 = result.substring(0, 3);
+    String part2 = result.substring(3, 6);
+    String part3 = "";
+    if (sdk! > 24) {
+      part3 = result.substring(6, 9);
+    } else {
+      part3 = "000";
+    }
+
+    return "$part1-$part2-$part3";
   }
 
-  if (result.length > 9) {
-    result = result.substring(0, 9);
-  } else if (result.length < 9) {
-    do {
-      result += "0";
-    } while (result.length == 9);
-  }
+  static Future<UserDeviceInformation?> getUserDeviceInformation() async {
+    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    String userDeviceName = "";
 
-  String part1 = result.substring(0, 3);
-  String part2 = result.substring(3, 6);
-  String part3 = "";
-  if (sdk! > 24) {
-    part3 = result.substring(6, 9);
-  } else {
-    part3 = "000";
-  }
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      final AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
+      String brand = androidInfo.brand;
+      String modelNumber = androidInfo.product;
+      String androidId = androidInfo.id;
 
-  return "$part1-$part2-$part3";
-}
+      log(androidInfo.version.sdkInt.toString());
 
+      userDeviceName = "$brand-$modelNumber";
 
-static Future<UserDeviceInformation?> getUserDeviceInformation() async {
-  final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  String userDeviceName = "";
+      return UserDeviceInformation(
+          userDeviceId: androidId,
+          userDeviceName: userDeviceName,
+          userDeviceModel: androidInfo.model,
+          deviceSdk: androidInfo.version.sdkInt);
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
+      String brand = iosInfo.name;
+      String modelNumber = iosInfo.model;
+      String iosId = iosInfo.identifierForVendor!;
 
-  if (defaultTargetPlatform == TargetPlatform.android) {
-    final AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
-    String brand = androidInfo.brand;
-    String modelNumber = androidInfo.product;
-    String androidId = androidInfo.id;
+      userDeviceName = "$brand-$modelNumber";
 
-    log(androidInfo.version.sdkInt.toString());
-
-    userDeviceName = "$brand-$modelNumber";
-
-    return UserDeviceInformation(
-        userDeviceId: androidId,
+      return UserDeviceInformation(
+        userDeviceId: iosId,
         userDeviceName: userDeviceName,
-        userDeviceModel: androidInfo.model,
-        deviceSdk: androidInfo.version.sdkInt);
-  } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-    IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
-    String brand = iosInfo.name;
-    String modelNumber = iosInfo.model;
-    String iosId = iosInfo.identifierForVendor!;
-
-    userDeviceName = "$brand-$modelNumber";
-
-    return UserDeviceInformation(
-      userDeviceId: iosId,
-      userDeviceName: userDeviceName,
-      userDeviceModel: iosInfo.model,
-    );
-  } else {
-    return null;
+        userDeviceModel: iosInfo.model,
+      );
+    } else {
+      return null;
+    }
   }
-}
 
   // static String formatTextToSpeech(
   //   String value, {
@@ -135,13 +134,20 @@ static Future<UserDeviceInformation?> getUserDeviceInformation() async {
         // List<String> splittedPart1 = replacedPart1.split("");
         // result = "${parts[0]} rial, and, ${splittedPart1[0]}${splittedPart1[1]}${splittedPart1[2]} baisa";
 
-         String replacedPart1 = part1.replaceAll("0", "zero");
-         
+        String replacedPart1 = part1.replaceAll("0", "zero");
+
         result = "${parts[0]} rial, and, $replacedPart1 baisa";
       }
     } else {
       if (part1.length == 1) {
-        part1 = '${part1}0';
+        if (part1 != '0') {
+          part1 = '${part1}0';
+          result = "${parts[0]} dirham, and, $part1 Fils";
+          return result;
+        } else {
+          result = "${parts[0]} dirham";
+            return result;
+        }
       }
       if (part1 == "00") {
         result = "${parts[0]} dirham";

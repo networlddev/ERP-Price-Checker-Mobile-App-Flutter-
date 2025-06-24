@@ -196,7 +196,7 @@ String activationFormatModelNumber = Utility.convertIntoActivationFormat(
         isValidationUrl: true);
     if (validationModel != null) {
       Hive.box(HiveBoxes.urlBox).put(HiveBoxes.urlBoxKey, "http://$url");
-
+    
       setLoading(false);
 
       return true;

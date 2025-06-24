@@ -21,6 +21,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
   bool _isLoading = false;
   ProductDetails? productDetails;
   String productName = "";
+  String description = "";
   String barcode = "";
   String price = '';
   StockDetails stockDetails = StockDetails();
@@ -32,6 +33,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
   bool imagesFetched = false;
   String status = '0';
   String decimalState = "2";
+  bool showReconfigureDialog = false;
 
   void setLoading(bool isLoading) {
     _isLoading = isLoading;
@@ -48,23 +50,24 @@ class PriceCheckerViewModel extends ChangeNotifier {
   Future<void> fetchImages({bool isRefreshed = false}) async {
     if (!imagesFetched || isRefreshed) {
       var url = Hive.box(HiveBoxes.urlBox).get(HiveBoxes.urlBoxKey);
-      final Images? result = await APIService.callGetRequest(
-          "$url${ApiUrls.priceCheckerUrl}GetPriceCheckerImages/1",
-          CreateObject.imagesObject) as Images?;
+      try {
+        final Images? result = await APIService.callGetRequest(
+            "$url${ApiUrls.priceCheckerUrl}GetPriceCheckerImages/1",
+            CreateObject.imagesObject) as Images?;
 
-      if (result != null) {
-        if (result.item != null) {
-          if (result.item!.isNotEmpty) {
-           
-            images = result.item;
-            print("runnnig ====>> ${images!.length}");
-            notifyListeners();
+        if (result != null) {
+          if (result.item != null) {
+            if (result.item!.isNotEmpty) {
+              images = result.item;
+              print("runnnig ====>> ${images!.length}");
+              notifyListeners();
+            }
           }
         }
-      }
-      imagesFetched = true;
+        imagesFetched = true;
+      } catch (e) {}
 
-      final CompanyLogoState resultForDecimalState =
+   try{   final CompanyLogoState resultForDecimalState =
           await APIService.callGetRequest(
         "$url${ApiUrls.priceCheckerUrl}ParamDecimalCount",
         CreateObject.companyLogo,
@@ -74,7 +77,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
 
       if (resultForDecimalState.state != null) {
         decimalState = resultForDecimalState.state!;
-      }
+      }}catch(e){}
     }
   }
 
@@ -118,6 +121,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
       await configureTts();
       speakText(result);
       ToastUtility.show(result, ToastType.error);
+      showReconfigureDialog = true;
       clearScannedValue();
       return;
     }
@@ -125,7 +129,8 @@ class PriceCheckerViewModel extends ChangeNotifier {
     String? name = extractName(result.name!);
     productDetails = result;
 
-    price = Utility.formatPrice(result.salesPrice!.toString(), state: decimalState);
+    price =
+        Utility.formatPrice(result.salesPrice!.toString(), state: decimalState);
     //salesPrice
     var requestUrlProductDetails = "$url${ApiUrls.stockDetailsUrl}$barcode";
     final StockDetails? stock = await APIService.callGetRequest(
@@ -137,6 +142,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
     if (stock != null && productDetails != null) {
       stockDetails = stock;
       productName = name!;
+      description = productDetails?.description ?? "";
       this.barcode = barcode;
     }
 
@@ -176,6 +182,7 @@ class PriceCheckerViewModel extends ChangeNotifier {
     stockDetails = StockDetails();
     productName = "";
     barcode = "";
+    description = "";
     productDetails = null;
     notifyListeners();
   }

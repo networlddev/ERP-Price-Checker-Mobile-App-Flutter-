@@ -2,7 +2,11 @@ import 'package:barcode/barcode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hive/hive.dart';
+import 'package:netpospricechecker/app_constants/hive_boxes.dart';
 import 'package:netpospricechecker/app_constants/images_paths.dart';
+import 'package:netpospricechecker/core/utils/toast_utility.dart';
+import 'package:netpospricechecker/main.dart';
 import 'package:netpospricechecker/models/images_model.dart';
 import 'package:netpospricechecker/models/product_details.dart';
 import 'package:netpospricechecker/view/widgets/custom_dialogue_box.dart';
@@ -29,12 +33,18 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
   List<Item>? imgList = [];
   final TextEditingController _barcodeController = TextEditingController();
   final FocusNode _barcodeFocusNode = FocusNode();
+  final TextEditingController reconfigDialogController =
+      TextEditingController();
+  final GlobalKey<FormState> reConfigForm = GlobalKey<FormState>();
+  bool isDialogShown = false;
 
   @override
   void initState() {
     context.read<PriceCheckerViewModel>().handleAdsImage(false);
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +58,37 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
     ProductDetails? productDetails = priceCheckerViewModel.productDetails;
     var productName = priceCheckerViewModel.productName;
     var barcode = priceCheckerViewModel.barcode;
+    var description = priceCheckerViewModel.description;
+
     imgList = priceCheckerViewModel.images;
     showAds = priceCheckerViewModel.showImages;
     status = priceCheckerViewModel.status;
     formattedPrice = priceCheckerViewModel.price;
+    var showReconfigureDialog = priceCheckerViewModel.showReconfigureDialog;
+    if (showReconfigureDialog) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        print('This runs after the first frame is rendered');
+        if (!isDialogShown) {
+          isDialogShown = true;
+          showTextFieldDialogue(context, reConfigForm, reconfigDialogController,
+                  "Server Not Responding enter secret password to reconfigure Price Checker",
+                  title: "Reconfigure",
+                  hintText: "Password",
+                  positiveButtonText: "Re-config",
+                  negativeButtonText: "Cancel")
+              .then(
+            (value) {
+              isDialogShown = false;
+              priceCheckerViewModel.showReconfigureDialog = false;
+           
+            },
+          );
+        }
+      });
+    } else {
+      Navigator.of(context, rootNavigator: true).maybePop();
+    }
+    ;
 
     return SafeArea(
       child: SizedBox(
@@ -88,37 +125,70 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  TextWidget(
-                                    txt: "NETWORLD ERP",
-                                    color: Colors.blue,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  SizedBox(
-                                    height: 0,
-                                    width: 0,
-                                    child: TextFieldWidget(
-                                      controller: _barcodeController,
-                                      hintText: '',
-                                      keyboardType: TextInputType.multiline,
-                                      autoFocus: true,
-                                      focusNode: _barcodeFocusNode,
-                                      onChanged: (text) {
-                                        _sendRequestAndClearText(text);
-                                      },
+                                  InkWell(
+                                    onDoubleTap: () {
+                                      setState(() {
+                                        showDetails = !showDetails;
+                                      });
+                                      Future.delayed(const Duration(seconds: 3),
+                                          () {
+                                        if (showDetails) {
+                                          setState(() {
+                                            showDetails = false;
+                                          });
+                                        }
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        TextWidget(
+                                          txt: "NETWORLD ERP ",
+                                          color: Colors.blue,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        TextWidget(
+                                          txt: "(version 5.0566)",
+                                          color: Colors.blue,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  TextWidget(
-                                    txt: "Three Star Fashion",
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+
+                                  // InkWell(
+                                  //              onTap: () => context
+                                  // .read<PriceCheckerViewModel>()
+                                  // .refreshData(),
+                                  //   child: TextWidget(
+                                  //     txt: "Three Star Fashion",
+                                  //     color: Colors.black,
+                                  //     fontSize: 18,
+                                  //     fontWeight: FontWeight.bold,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
                           )
                         ],
+                      ),
+                      SizedBox(
+                        height: 0,
+                        width: 0,
+                        child: TextFieldWidget(
+                          controller: _barcodeController,
+                          hintText: '',
+                          keyboardType: TextInputType.multiline,
+                          autoFocus: true,
+                          focusNode: _barcodeFocusNode,
+                          onChanged: (text) {
+                            Navigator.of(context, rootNavigator: true)
+                                .maybePop();
+                            _sendRequestAndClearText(text);
+                          },
+                        ),
                       ),
                       // Padding(
                       //   padding: const EdgeInsets.all(20),
@@ -206,13 +276,13 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                         children: [
                           Expanded(
                             child: SizedBox(
-                              height: size.height * 0.3,
+                              height: size.height * 0.4,
                               width: size.width * 0.45,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   CustomContainerWidget(
-                                    height: size.height * 0.15,
+                                    height: size.height * 0.25,
                                     width: size.width * 0.45,
                                     alignment: Alignment.bottomCenter,
                                     widget: barcode.isNotEmpty
@@ -225,7 +295,7 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                                                   code: Barcode.code128()),
                                               TextWidget(
                                                 txt: barcode,
-                                                fontSize: 18,
+                                                fontSize: 20,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black,
                                               )
@@ -238,33 +308,44 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                             ),
                           ),
                           Expanded(
-                            child: PriceTagContainer(
-                              height: size.height * 0.6,
-                              width: size.width * 0.6,
-                              widget: isLoading
-                                  ? const Center(
-                                      child: CircularProgressIndicator(
-                                        color: Colors.blue,
-                                      ),
-                                    )
-                                  : Container(
-                                      height: size.height * 0.4,
-                                      width: size.width * 0.4,
-                                      //  color: Colors.amber,
-                                      child: Center(
-                                        child: FittedBox(
-                                          child: TextWidget(
-                                            txt: formattedPrice,
-                                            fontSize: 150,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                            child: Column(
+                              children: [
+                                PriceTagContainer(
+                                  height: size.height * 0.6,
+                                  width: size.width * 0.6,
+                                  widget: isLoading
+                                      ? const Center(
+                                          child: CircularProgressIndicator(
+                                            color: Colors.blue,
+                                          ),
+                                        )
+                                      : Container(
+                                          height: size.height * 0.4,
+                                          width: size.width * 0.4,
+                                          //  color: Colors.amber,
+                                          child: Center(
+                                            child: formattedPrice.isEmpty
+                                                ? const SizedBox()
+                                                : FittedBox(
+                                                    child: PriceText(
+                                                        formattedPrice),
+                                                  ),
                                           ),
                                         ),
-                                      ),
-                                    ),
+                                ),
+                                TextWidget(
+                                  txt: description,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                )
+                              ],
                             ),
                           ),
                         ],
+                      ),
+                      SizedBox(
+                        height: 30,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -282,7 +363,7 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
                                 ),
                                 child: TextWidget(
                                   txt: productName,
-                                  fontSize: 30,
+                                  fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                   textAlign: TextAlign.start,
                                   color: Colors.black,
@@ -358,7 +439,6 @@ class _PriceCheckerScreenState extends State<PriceCheckerScreen> {
         text: filter,
         selection: TextSelection.collapsed(offset: filter.length),
       );
-      
 
       /// you can do something
       context.read<PriceCheckerViewModel>().checkPrice(filter);
@@ -381,15 +461,51 @@ class BarcodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final svg = code.toSvg(data, width: 600, height: 100, drawText: false);
+    final svg = code.toSvg(data, width: 800, height: 90, drawText: false);
     return Container(
       padding: const EdgeInsets.all(20),
       child: Center(
         child: SvgPicture.string(
           svg,
-          width: 600,
-          height: 50,
+          width: 800,
+          height: 90,
         ),
+      ),
+    );
+  }
+}
+
+class PriceText extends StatelessWidget {
+  final String price;
+
+  PriceText(this.price);
+
+  @override
+  Widget build(BuildContext context) {
+    final parts = price.split('.');
+    final whole = parts[0];
+    final decimal = parts.length > 1 ? parts[1] : '00';
+
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: whole,
+            style: TextStyle(
+              fontSize: 150,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          TextSpan(
+            text: '.$decimal',
+            style: TextStyle(
+              fontSize: 75,
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ],
       ),
     );
   }
