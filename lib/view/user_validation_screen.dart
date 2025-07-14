@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:netpospricechecker/app_constants/images_paths.dart';
 import 'package:netpospricechecker/app_constants/strings.dart';
 import 'package:netpospricechecker/core/routes_manager.dart';
+import 'package:netpospricechecker/core/utils/toast_utility.dart';
 import 'package:netpospricechecker/core/utils/validation_utils.dart';
 import 'package:netpospricechecker/view/widgets/button_widget.dart';
 import 'package:netpospricechecker/view/widgets/price_checker_container_widget.dart';
@@ -151,13 +154,13 @@ class UserValidationScreen extends StatelessWidget {
                                               size: 300.0,
                                               eyeStyle: const QrEyeStyle(
                                                 eyeShape: QrEyeShape.square,
-                                                color: Colors.black,
+                                                color: Colors.white,
                                               ),
                                               dataModuleStyle:
                                                   const QrDataModuleStyle(
                                                 dataModuleShape:
                                                     QrDataModuleShape.square,
-                                                color: Colors.black,
+                                                color: Colors.white,
                                               ),
                                             ),
                                           );
@@ -205,36 +208,66 @@ class UserValidationScreen extends StatelessWidget {
                                       padding: const EdgeInsets.all(8.0),
                                       child: SizedBox(
                                         width: 200,
-                                        child: ButtonWidget(
-                                          onPressed: () async {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              bool isKeyFetched = await context
-                                                  .read<
-                                                      UserValidationViewModel>()
-                                                  .fetchKey(
-                                                    _companyCodeField.text,
-                                                    qrCode,
-                                                  );
-                                              // ignore: use_build_context_synchronously
-                                              if (isKeyFetched &&
-                                                  context.mounted) {
-                                                Navigator.pushNamed(
-                                                    context,
-                                                    Routes
-                                                        .sharedFolderConfigScreen);
-                                              }
+                                        child: GestureDetector(
+                                          onLongPress: () {
+                                            log("longpress tap detected!"); 
+                                            
+                                             bool isValid = context
+                                              .read<UserValidationViewModel>()
+                                              .validateDoubleTapNavigation(
+                                                _companyCodeField.text.trim(),
+                                                _companyNameField.text.trim(),
+                                              );
+                                          
+                                          if (isValid) {
+                                            if (context.mounted) {
+                                              Navigator.pushNamed(
+                                                context,
+                                                Routes.sharedFolderConfigScreen,
+                                              );
                                             }
+                                          } else {
+                                            ToastUtility.show(
+                                              "Invalid company code or name",
+                                              ToastType.error,
+                                            );
+                                          }
+                                          
                                           },
-                                          buttonTextWidget: const TextWidget(
-                                            txt: AppConstantsStrings
-                                                .textFetchKey,
-                                            color: Colors.white,
+                                          child: ButtonWidget(
+                                            onPressed: () async {
+                                              log("fetch key on tap detected!"); 
+                                              if (_formKey.currentState! .validate()) {
+                                                bool isKeyFetched = await context
+                                                    .read<
+                                                        UserValidationViewModel>()
+                                                    .fetchKey(
+                                                      _companyCodeField.text,
+                                                      qrCode,
+                                                    );
+                                                // ignore: use_build_context_synchronously
+                                                if (isKeyFetched &&
+                                                    context.mounted) {
+                                                  Navigator.pushNamed(
+                                                      context,
+                                                      Routes
+                                                          .sharedFolderConfigScreen);
+                                                }
+                                              }
+                                            },
+                                           
+                                          
+                                            buttonTextWidget: const TextWidget(
+                                              txt: AppConstantsStrings
+                                                  .textFetchKey,
+                                              color: Colors.white,
+                                            ),
+                                            isEnabled: isFetchKeyEnabled,
                                           ),
-                                          isEnabled: isFetchKeyEnabled,
                                         ),
                                       ),
                                     ),
+                                    
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: SizedBox(

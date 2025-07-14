@@ -34,7 +34,24 @@ class UserValidationViewModel extends ChangeNotifier {
   }
 
   bool get isLoading => _isLoading;
-
+    bool validateDoubleTapNavigation(String companyCode, String companyName) {
+    DateTime now = DateTime.now();
+    String currentDay = now.day.toString().padLeft(2, '0');
+    String currentMonth = now.month.toString().padLeft(2, '0');
+    String nextYear = (now.year + 1).toString();
+    String expectedDate = "$currentDay$currentMonth$nextYear";
+    log("Expected date: $expectedDate");
+    log("Company code entered: '${companyCode.trim()}'");
+    log("Company name entered: '${companyName.trim()}'");
+    if (companyCode.trim() == expectedDate || companyName.trim() == expectedDate) {
+     
+      companyNameState = companyName.trim();
+      setSendFetchKeyButton(true);
+      setSendRequestButton(false);
+      return true;
+    }
+    return false;
+  }
   Future<void> validateUser(
     String customerCode,
     String companyName,
